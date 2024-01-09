@@ -2,6 +2,7 @@
     "tasks": {
         "dev": "deno run -A npm:vite",
         "build": "deno run -A npm:vite build",
-        "serve": "deno run -A serve.ts"
+        "serve": "deno run -A serve.ts",
+        "release": "deno task build && git add . && git commit -m 'release' && git push && git push"
     }
 }
