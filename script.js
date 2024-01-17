@@ -8,11 +8,25 @@ $buttonStart.addEventListener('click', async () => {
   const mediarecorder = new MediaRecorder(media, {
     mimeType: 'video/webm;codecs=vp8,opus'
   })
-  mediarecorder.start()
+  function startRecording() {
+    mediarecorder.start()
+    document.title = 'Recording...'
+    $buttonStart.style.display = 'none';
+    $buttonStop.style.display = 'initial';
+  }
+
+  function stopRecording() {
+    mediarecorder.stop()
+    document.title = 'Stoped';
+    $buttonStart.style.display = 'initial';
+    $buttonStop.style.display = 'none';
+  }
 
   const [video] = media.getVideoTracks()
   video.addEventListener("ended", () => {
-    mediarecorder.stop()
+    stopRecording();
+
+
   })
 
   mediarecorder.addEventListener("dataavailable", (e) => {
@@ -24,11 +38,10 @@ $buttonStart.addEventListener('click', async () => {
   })
 
   $buttonStop.addEventListener('click', () => {
-    mediarecorder.stop();
-    $buttonStart.style.display = 'initial';
-    $buttonStop.style.display = 'none';
+    stopRecording();
+
   });
-  $buttonStart.style.display = 'none';
-  $buttonStop.style.display = 'initial';
+  startRecording();
+
 
 })
