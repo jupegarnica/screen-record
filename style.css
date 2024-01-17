@@ -4,8 +4,29 @@ body {
 	display: grid;
 	place-content: center;
 	margin:0;
+	/* background circular gradiente with movement */
+	--color-1: rgba(255, 203, 17, 0.634);
+	--color-2: purple;
+	--color-3: #112;
+	background: radial-gradient(circle at 50% 50%, var(--color-1) 0%, var(--color-2) 50%, var(--color-3) 100%);
+	background-size: 200% 200%;
+	animation: gradient 25s ease infinite;
+
 }
 
+@keyframes gradient {
+	0% {
+		background-position: 50% 50%;
+	}
+
+	50% {
+		background-position: 100% 100%;
+	}
+
+	100% {
+		background-position: 50% 50%;
+	}
+}
 button {
 	--bg-color: #333;
 	font-size: 24px;
