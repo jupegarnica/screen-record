@@ -45,6 +45,10 @@ $buttonStart.addEventListener('click', async () => {
     $buttonStop.style.display = 'none';
     $videoPreview.style.display = 'none';
     console.log('Recording stopped');
+
+    // Stop all media tracks
+    combinedStream.getTracks().forEach(track => track.stop());
+    console.log('All media tracks stopped');
   }
 
   const [video] = screenMedia.getVideoTracks();
