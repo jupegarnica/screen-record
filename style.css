@@ -1,15 +1,15 @@
 body {
-	--red:hsl(0, 100%, 30%);
+	--red: hsl(0, 100%, 50%); /* Keep the red color */
 
 	height: 100vh;
 	background: #111;
 	display: grid;
 	place-content: center;
 	margin:0;
-	/* background circular gradiente with movement */
-	--color-1: rgba(255, 203, 17, 0.634);
-	--color-2: purple;
-	--color-3: #112;
+	/* background circular gradient with movement */
+	--color-1: rgba(255, 105, 180, 0.9); /* Hot pink */
+	--color-2: rgba(75, 0, 130, 0.9); /* Indigo */
+	--color-3: rgba(0, 255, 127, 0.9); /* Spring green */
 	background: radial-gradient(circle at 50% 50%, var(--color-1) 0%, var(--color-2) 50%, var(--color-3) 100%);
 	background-size: 200% 200%;
 	animation: gradient 15s ease infinite;
@@ -93,8 +93,8 @@ button:has(.red) {
 }
 
 #video {
-	width: 80vw;
-	height: 80vh;
+	width: 88vw;
+	height: 88vh;
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
