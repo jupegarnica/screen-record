@@ -1,5 +1,8 @@
 const $buttonStart = document.querySelector('#start');
 const $buttonStop = document.querySelector('#stop');
+const $videoPreview = document.querySelector('#video');
+$videoPreview.style.display = 'none';
+$videoPreview.autoplay = true;
 
 $buttonStart.addEventListener('click', async () => {
   const screenMedia = await navigator.mediaDevices.getDisplayMedia({
@@ -13,6 +16,9 @@ $buttonStart.addEventListener('click', async () => {
     ...screenMedia.getVideoTracks(),
     ...audioMedia.getAudioTracks()
   ]);
+
+  $videoPreview.srcObject = combinedStream;
+  $videoPreview.style.display = 'block';
 
   const mediarecorder = new MediaRecorder(combinedStream, {
     mimeType: 'video/webm;codecs=vp8,opus'
@@ -30,6 +36,7 @@ $buttonStart.addEventListener('click', async () => {
     document.title = 'Stopped';
     $buttonStart.style.display = 'initial';
     $buttonStop.style.display = 'none';
+    $videoPreview.style.display = 'none';
   }
 
   const [video] = screenMedia.getVideoTracks();
