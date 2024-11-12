@@ -70,6 +70,9 @@ $buttonStart.addEventListener('click', async () => {
 
   $videoPreview.srcObject = combinedStream;
   $videoPreview.style.display = 'block';
+  setTimeout(() => {
+    $videoPreview.style.height = '88vh';
+  }, 10); // Allow time for display change to take effect
   console.log('Combined stream set to video preview');
 
   const mediarecorder = new MediaRecorder(combinedStream, {
@@ -90,7 +93,10 @@ $buttonStart.addEventListener('click', async () => {
     document.title = 'Stopped';
     $buttonStart.style.display = 'initial';
     $buttonStop.style.display = 'none';
-    $videoPreview.style.display = 'none';
+    $videoPreview.style.height = '0';
+    setTimeout(() => {
+      $videoPreview.style.display = 'none';
+    }, 500); // Match the transition duration
     console.log('Recording stopped');
 
     // Stop all media tracks

@@ -1,101 +1,102 @@
 body {
-	--red: hsl(0, 100%, 50%); /* Keep the red color */
+  --red: hsl(0, 100%, 50%); /* Keep the red color */
 
-	height: 100vh;
-	background: #111;
-	display: grid;
-	place-content: center;
-	margin:0;
-	/* background circular gradient with movement */
-	--color-1: rgba(255, 105, 180, 0.9); /* Hot pink */
-	--color-2: rgba(75, 0, 130, 0.9); /* Indigo */
-	--color-3: rgba(0, 255, 127, 0.9); /* Spring green */
-	background: radial-gradient(circle at 50% 50%, var(--color-1) 0%, var(--color-2) 50%, var(--color-3) 100%);
-	background-size: 200% 200%;
-	animation: gradient 15s ease infinite;
-
+  height: 100vh;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  /* background circular gradient with movement */
+  --color-1: rgba(255, 105, 180, 0.9); /* Hot pink */
+  --color-2: rgba(75, 0, 130, 0.9); /* Indigo */
+  --color-3: rgba(0, 255, 127, 0.9); /* Spring green */
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--color-1) 0%,
+    var(--color-2) 50%,
+    var(--color-3) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
 }
 * {
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 @keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
+  0% {
+    background-position: 0% 50%;
+  }
 
-	50% {
-		background-position: 100% 50%;
-	}
+  50% {
+    background-position: 100% 50%;
+  }
 
-	100% {
-		background-position: 0% 50%;
-	}
+  100% {
+    background-position: 0% 50%;
+  }
 }
 button {
-	--bg-color: #333;
-	font-size: 24px;
-	padding: 10px 20px;
-	border-radius: 5px;
-	background: var(--bg-color);
-	text-transform: uppercase;
-	border: 3px solid var(--bg-color);
-	width: 15em;
-	color: white;
-
-
+  --bg-color: #333;
+  font-size: 24px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background: var(--bg-color);
+  text-transform: uppercase;
+  border: 3px solid var(--bg-color);
+  width: 15em;
+  color: white;
 }
 button:has(.red) {
-	border-color: var(--red);
+  border-color: var(--red);
+}
+#stop {
+  display: none;
 }
 
-#stop {
-	display: none;
-	position: absolute;
-	top: 5%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
 .dot {
-	--diameter: 20px;
-	display: inline-block;
-	height: var(--diameter);
-	width: var(--diameter) ;
-	border-radius: 50%;
-	background: #fff;
-	margin: 0 5px;
-	position: relative;
-	top: 2px;
+  --diameter: 20px;
+  display: inline-block;
+  height: var(--diameter);
+  width: var(--diameter);
+  border-radius: 50%;
+  background: #fff;
+  margin: 0 5px;
+  position: relative;
+  top: 2px;
 }
 
 @keyframes blink {
-	0% {
-		opacity: 0;
-	}
+  0% {
+    opacity: 0;
+  }
 
-	50% {
-		opacity: 1;
-	}
+  50% {
+    opacity: 1;
+  }
 
-	100% {
-		opacity: 0;
-	}
+  100% {
+    opacity: 0;
+  }
 }
 
 .red {
-	background: var(--red);
-	animation: blink 1s infinite;
-
+  background: var(--red);
+  animation: blink 1s infinite;
 }
 
 .grey {
-	background: grey;
+  background: grey;
 }
 
 #video {
-	width: 88vw;
-	height: 88vh;
-	max-width: 100%;
-	max-height: 100%;
-	object-fit: contain;
+  width: 88vw;
+  height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: height 0.5s ease;
 }
