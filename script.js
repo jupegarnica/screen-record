@@ -196,7 +196,6 @@ $buttonStart.addEventListener('click', async () => {
     $videoPreview.style.height = '0';
     setTimeout(() => {
       $videoPreview.style.display = 'none';
-      document.body.removeChild($camPreview); // Remove the webcam preview
     }, 500); // Match the transition duration
     console.log('Recording stopped');
 
@@ -235,7 +234,9 @@ $buttonStart.addEventListener('click', async () => {
   });
 
   mediarecorder.addEventListener("stop", () => {
-    mediarecorder.requestData();
+    if (mediarecorder.state !== 'inactive') {
+      mediarecorder.requestData();
+    }
     console.log('MediaRecorder stopped');
   });
 
