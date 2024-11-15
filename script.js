@@ -88,7 +88,7 @@ $buttonStart.addEventListener('click', async () => {
       log('Screen media obtained');
     } catch (err) {
       alert('Screen recording is not supported on this device.');
-      log('Screen recording error', err.message);
+      log('Screen recording error', err.message, err.message, typeof navigator.mediaDevices.getDisplayMedia, String(navigator.mediaDevices.getDisplayMedia));
       return;
     }
   }
