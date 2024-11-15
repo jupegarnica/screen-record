@@ -56,8 +56,27 @@ function changePalette() {
 // Set initial random palette
 changePalette();
 
+function ensureAtLeastOneChecked() {
+  if (!$includeScreen.checked && !$includeCamera.checked) {
+    if (this === $includeScreen) {
+      $includeCamera.checked = true;
+    } else {
+      $includeScreen.checked = true;
+    }
+  }
+}
+
+$includeScreen.addEventListener('change', ensureAtLeastOneChecked);
+$includeCamera.addEventListener('change', ensureAtLeastOneChecked);
+
 $buttonStart.addEventListener('click', async () => {
   console.log('Start button clicked');
+
+  if (!$includeScreen.checked && !$includeCamera.checked) {
+    alert('Please select at least Screen or Camera to record.');
+    return;
+  }
+
   let screenMedia;
   if ($includeScreen.checked) {
     screenMedia = await navigator.mediaDevices.getDisplayMedia({
