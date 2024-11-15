@@ -102,7 +102,7 @@ $buttonStart.addEventListener('click', async () => {
       log('Audio media obtained');
     } catch (err) {
       alert('Microphone access is not supported on this device.');
-      log('Microphone access error', err.message);
+      log('Microphone access error', err.message, typeof navigator.mediaDevices.getUserMedia, String(navigator.mediaDevices.getUserMedia));
       return;
     }
   }
