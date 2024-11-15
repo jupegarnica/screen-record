@@ -81,33 +81,49 @@ $buttonStart.addEventListener('click', async () => {
 
   let screenMedia;
   if ($includeScreen.checked) {
-    screenMedia = await navigator.mediaDevices.getDisplayMedia({
-      video: { frameRate: { ideal: 30 } }
-    });
-    log('Screen media obtained');
+    try {
+      screenMedia = await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: { ideal: 30 } }
+      });
+      log('Screen media obtained');
+    } catch (err) {
+      alert('Screen recording is not supported on this device.');
+      log('Screen recording error', err.message);
+      return;
+    }
   }
 
   let audioMedia;
-
   if ($includeMicrophone.checked) {
-    audioMedia = await navigator.mediaDevices.getUserMedia({
-      audio: true
-    });
-    log('Audio media obtained');
+    try {
+      audioMedia = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+      log('Audio media obtained');
+    } catch (err) {
+      alert('Microphone access is not supported on this device.');
+      log('Microphone access error', err.message);
+      return;
+    }
   }
 
   let camMedia;
   let camVideo;
-
   if ($includeCamera.checked) {
-    camMedia = await navigator.mediaDevices.getUserMedia({
-      video: true
-    });
-    log('Camera media obtained');
+    try {
+      camMedia = await navigator.mediaDevices.getUserMedia({
+        video: true
+      });
+      log('Camera media obtained');
 
-    camVideo = document.createElement('video');
-    camVideo.srcObject = camMedia;
-    await camVideo.play();
+      camVideo = document.createElement('video');
+      camVideo.srcObject = camMedia;
+      await camVideo.play();
+    } catch (err) {
+      alert('Camera access is not supported on this device.');
+      log('Camera access error', err.message);
+      return;
+    }
   }
 
   // Create video elements for the screen and webcam streams
@@ -269,6 +285,16 @@ $buttonStart.addEventListener('click', async () => {
   startRecording();
 });
 
+// Add touch event listeners for mobile devices
+$buttonStart.addEventListener('touchstart', async (e) => {
+  e.preventDefault();
+  $buttonStart.click();
+});
+
+$buttonStop.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  $buttonStop.click();
+});
 
 function log(...args) {
   console.log(...args);
