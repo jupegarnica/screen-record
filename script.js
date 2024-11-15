@@ -5,6 +5,8 @@ const $includeCamera = document.querySelector('#includeCamera');
 const $configActions = document.querySelector('#configActions');
 const $includeMicrophone = document.querySelector('#includeMicrophone');
 const $includeScreen = document.querySelector('#includeScreen');
+const $log = document.querySelector('#logs');
+
 $videoPreview.style.display = 'none';
 $videoPreview.autoplay = true;
 $videoPreview.muted = true; // Mute the video player
@@ -50,7 +52,7 @@ function changePalette() {
   document.body.style.setProperty('--color-1', palette.color1);
   document.body.style.setProperty('--color-2', palette.color2);
   document.body.style.setProperty('--color-3', palette.color3);
-  console.log('Palette changed', palette);
+  log('Palette changed', palette);
 }
 
 // Set initial random palette
@@ -70,7 +72,7 @@ $includeScreen.addEventListener('change', ensureAtLeastOneChecked);
 $includeCamera.addEventListener('change', ensureAtLeastOneChecked);
 
 $buttonStart.addEventListener('click', async () => {
-  console.log('Start button clicked');
+  log('Start button clicked');
 
   if (!$includeScreen.checked && !$includeCamera.checked) {
     alert('Please select at least Screen or Camera to record.');
@@ -82,7 +84,7 @@ $buttonStart.addEventListener('click', async () => {
     screenMedia = await navigator.mediaDevices.getDisplayMedia({
       video: { frameRate: { ideal: 30 } }
     });
-    console.log('Screen media obtained');
+    log('Screen media obtained');
   }
 
   let audioMedia;
@@ -91,7 +93,7 @@ $buttonStart.addEventListener('click', async () => {
     audioMedia = await navigator.mediaDevices.getUserMedia({
       audio: true
     });
-    console.log('Audio media obtained');
+    log('Audio media obtained');
   }
 
   let camMedia;
@@ -101,7 +103,7 @@ $buttonStart.addEventListener('click', async () => {
     camMedia = await navigator.mediaDevices.getUserMedia({
       video: true
     });
-    console.log('Camera media obtained');
+    log('Camera media obtained');
 
     camVideo = document.createElement('video');
     camVideo.srcObject = camMedia;
@@ -125,7 +127,7 @@ $buttonStart.addEventListener('click', async () => {
     canvas.width = camVideo.videoWidth;
     canvas.height = camVideo.videoHeight;
   }
-  console.log('Canvas created', canvas.width, canvas.height);
+  log('Canvas created', canvas.width, canvas.height);
 
   const ctx = canvas.getContext('2d');
 
@@ -190,12 +192,12 @@ $buttonStart.addEventListener('click', async () => {
   setTimeout(() => {
     $videoPreview.style.height = '88vh';
   }, 10); // Allow time for display change to take effect
-  console.log('Combined stream set to video preview');
+  log('Combined stream set to video preview');
 
   const mediarecorder = new MediaRecorder(finalStream, {
     mimeType: 'video/webm;codecs=vp8,opus'
   });
-  console.log('MediaRecorder created');
+  log('MediaRecorder created');
 
   function startRecording() {
     mediarecorder.start();
@@ -203,7 +205,7 @@ $buttonStart.addEventListener('click', async () => {
     $buttonStart.style.display = 'none';
     $configActions.style.display = 'none';
     $buttonStop.style.display = 'initial';
-    console.log('Recording started');
+    log('Recording started');
   }
 
   function stopRecording() {
@@ -216,7 +218,7 @@ $buttonStart.addEventListener('click', async () => {
     setTimeout(() => {
       $videoPreview.style.display = 'none';
     }, 500); // Match the transition duration
-    console.log('Recording stopped');
+    log('Recording stopped');
 
     // Stop all media tracks
     finalStream.getTracks().forEach(track => track.stop());
@@ -229,7 +231,7 @@ $buttonStart.addEventListener('click', async () => {
     if (audioMedia) {
       audioMedia.getTracks().forEach(track => track.stop());
     }
-    console.log('All media tracks stopped');
+    log('All media tracks stopped');
 
     // Change the palette after recording
     changePalette();
@@ -239,7 +241,7 @@ $buttonStart.addEventListener('click', async () => {
     const [video] = screenMedia.getVideoTracks();
     video.addEventListener("ended", () => {
       stopRecording();
-      console.log('Video track ended');
+      log('Video track ended');
     });
   }
 
@@ -249,20 +251,27 @@ $buttonStart.addEventListener('click', async () => {
     const now = new Date().toISOString().replace('T', '_').replace(/\/|:|\s/g, "").split(".")[0];
     link.download = `screen-record-${now}.webm`;
     link.click();
-    console.log('Data available, file downloaded');
+    log('Data available, file downloaded');
   });
 
   mediarecorder.addEventListener("stop", () => {
     if (mediarecorder.state !== 'inactive') {
       mediarecorder.requestData();
     }
-    console.log('MediaRecorder stopped');
+    log('MediaRecorder stopped');
   });
 
   $buttonStop.addEventListener('click', () => {
     stopRecording();
-    console.log('Stop button clicked');
+    log('Stop button clicked');
   });
 
   startRecording();
 });
+
+
+function log(...args) {
+  console.log(...args);
+
+  $log.innerHTML += `<p>${args.map(arg => JSON.stringify(arg)).join(' ')}</p>`;
+}

@@ -7,24 +7,28 @@
     <link type="text/css" rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <button id="start"><span class="grey dot"></span> Grabar</button>
-    <button id="stop"><span class="red dot"></span> Detener</button>
-    <section id="configActions">
-      <label for="includeScreen">
-        <input type="checkbox" id="includeScreen" checked />
-        Screen
-      </label>
-      <label for="includeCamera">
-        <input type="checkbox" id="includeCamera" checked />
-        Camera
-      </label>
-      <label for="includeMicrophone">
-        <input type="checkbox" id="includeMicrophone" checked />
-        Microphone
-      </label>
+    <section class="controls">
+      <button id="start"><span class="grey dot"></span> Grabar</button>
+      <button id="stop"><span class="red dot"></span> Detener</button>
+      <section id="configActions">
+        <label for="includeScreen">
+          <input type="checkbox" id="includeScreen" checked />
+          Screen
+        </label>
+        <label for="includeCamera">
+          <input type="checkbox" id="includeCamera" checked />
+          Camera
+        </label>
+        <label for="includeMicrophone">
+          <input type="checkbox" id="includeMicrophone" checked />
+          Microphone
+        </label>
+      </section>
     </section>
-
-    <video id="video" controls></video>
+    <section class="video">
+      <video id="video" controls></video>
+      <section id="logs"></section>
+    </section>
   </body>
   <script type="module" src="script.js"></script>
 </html>
