@@ -1,6 +1,8 @@
 const $buttonStart = document.querySelector('#start');
 const $buttonStop = document.querySelector('#stop');
 const $videoPreview = document.querySelector('#video');
+const $includeCamera = document.querySelector('#includeCamera');
+const $configActions = document.querySelector('#configActions');
 $videoPreview.style.display = 'none';
 $videoPreview.autoplay = true;
 $videoPreview.muted = true; // Mute the video player
@@ -62,19 +64,25 @@ $buttonStart.addEventListener('click', async () => {
     audio: true
   });
   console.log('Audio media obtained');
-  const camMedia = await navigator.mediaDevices.getUserMedia({
-    video: true
-  });
-  console.log('Camera media obtained');
+
+  let camMedia;
+  let camVideo;
+
+  if ($includeCamera.checked) {
+    camMedia = await navigator.mediaDevices.getUserMedia({
+      video: true
+    });
+    console.log('Camera media obtained');
+
+    camVideo = document.createElement('video');
+    camVideo.srcObject = camMedia;
+    await camVideo.play();
+  }
 
   // Create video elements for the screen and webcam streams
   const screenVideo = document.createElement('video');
   screenVideo.srcObject = screenMedia;
   await screenVideo.play();
-
-  const camVideo = document.createElement('video');
-  camVideo.srcObject = camMedia;
-  await camVideo.play();
 
   // Create a canvas to combine the videos
   const canvas = document.createElement('canvas');
@@ -86,7 +94,7 @@ $buttonStart.addEventListener('click', async () => {
   function drawToCanvas() {
     ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
 
-    if (camVideo.videoWidth > 0 && camVideo.videoHeight > 0) {
+    if (camVideo) {
       const videoAspectRatio = camVideo.videoWidth / camVideo.videoHeight;
       const maxCamWidth = canvas.width * 0.2; // 20% of canvas width
       const maxCamHeight = canvas.height * 0.2; // 20% of canvas height
@@ -117,10 +125,8 @@ $buttonStart.addEventListener('click', async () => {
   const canvasStream = canvas.captureStream(30); // 30 FPS
 
   // Combine audio tracks with canvas stream
-  const finalStream = new MediaStream([
-    ...canvasStream.getVideoTracks(),
-    ...audioMedia.getAudioTracks()
-  ]);
+  const tracks = [...canvasStream.getVideoTracks(), ...audioMedia.getAudioTracks()];
+  const finalStream = new MediaStream(tracks);
 
   $videoPreview.srcObject = finalStream;
   $videoPreview.style.display = 'block';
@@ -138,6 +144,7 @@ $buttonStart.addEventListener('click', async () => {
     mediarecorder.start();
     document.title = 'Recording...';
     $buttonStart.style.display = 'none';
+    $configActions.style.display = 'none';
     $buttonStop.style.display = 'initial';
     console.log('Recording started');
   }
@@ -146,6 +153,7 @@ $buttonStart.addEventListener('click', async () => {
     mediarecorder.stop();
     document.title = 'Stopped';
     $buttonStart.style.display = 'initial';
+    $configActions.style.display = 'initial';
     $buttonStop.style.display = 'none';
     $videoPreview.style.height = '0';
     setTimeout(() => {
@@ -157,7 +165,9 @@ $buttonStart.addEventListener('click', async () => {
     // Stop all media tracks
     finalStream.getTracks().forEach(track => track.stop());
     screenMedia.getTracks().forEach(track => track.stop());
-    camMedia.getTracks().forEach(track => track.stop());
+    if (camMedia) {
+      camMedia.getTracks().forEach(track => track.stop());
+    }
     console.log('All media tracks stopped');
 
     // Change the palette after recording
