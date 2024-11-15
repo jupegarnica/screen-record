@@ -3,6 +3,7 @@ const $buttonStop = document.querySelector('#stop');
 const $videoPreview = document.querySelector('#video');
 const $includeCamera = document.querySelector('#includeCamera');
 const $configActions = document.querySelector('#configActions');
+const $includeMicrophone = document.querySelector('#includeMicrophone');
 $videoPreview.style.display = 'none';
 $videoPreview.autoplay = true;
 $videoPreview.muted = true; // Mute the video player
@@ -60,10 +61,15 @@ $buttonStart.addEventListener('click', async () => {
     video: { frameRate: { ideal: 30 } }
   });
   console.log('Screen media obtained');
-  const audioMedia = await navigator.mediaDevices.getUserMedia({
-    audio: true
-  });
-  console.log('Audio media obtained');
+
+  let audioMedia;
+
+  if ($includeMicrophone.checked) {
+    audioMedia = await navigator.mediaDevices.getUserMedia({
+      audio: true
+    });
+    console.log('Audio media obtained');
+  }
 
   let camMedia;
   let camVideo;
@@ -124,8 +130,13 @@ $buttonStart.addEventListener('click', async () => {
   // Capture the canvas stream
   const canvasStream = canvas.captureStream(30); // 30 FPS
 
-  // Combine audio tracks with canvas stream
-  const tracks = [...canvasStream.getVideoTracks(), ...audioMedia.getAudioTracks()];
+  // Combine tracks to create finalStream
+  const tracks = [...canvasStream.getVideoTracks()];
+
+  if (audioMedia) {
+    tracks.push(...audioMedia.getAudioTracks());
+  }
+
   const finalStream = new MediaStream(tracks);
 
   $videoPreview.srcObject = finalStream;
@@ -167,6 +178,9 @@ $buttonStart.addEventListener('click', async () => {
     screenMedia.getTracks().forEach(track => track.stop());
     if (camMedia) {
       camMedia.getTracks().forEach(track => track.stop());
+    }
+    if (audioMedia) {
+      audioMedia.getTracks().forEach(track => track.stop());
     }
     console.log('All media tracks stopped');
 
