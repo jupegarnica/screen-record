@@ -6,6 +6,8 @@ const $configActions = document.querySelector('#configActions');
 const $includeMicrophone = document.querySelector('#includeMicrophone');
 const $includeScreen = document.querySelector('#includeScreen');
 const $log = document.querySelector('#logs');
+const uiDebugMode = new URLSearchParams(location.search).get('debug') === 'true';
+
 
 $videoPreview.style.display = 'none';
 $videoPreview.autoplay = true;
@@ -298,6 +300,6 @@ $buttonStop.addEventListener('touchstart', (e) => {
 
 function log(...args) {
   console.log(...args);
-
+  if (!uiDebugMode) return;
   $log.innerHTML += `<p>${args.map(arg => JSON.stringify(arg)).join(' ')}</p>`;
 }
