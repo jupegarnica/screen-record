@@ -1,13 +1,16 @@
-body {
+:root {
   --red: hsl(0, 100%, 50%); /* Keep the red color */
-
+  --black: #444;
+}
+body {
+  font-size: 14px; /* Set base font size */
   height: 100vh;
-  background: #111;
+  background: var(--black);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 1.25em; /* 20px equivalent */
   margin: 0;
   /* background circular gradient with movement */
   --color-1: rgba(255, 105, 180, 0.9); /* Hot pink */
@@ -42,12 +45,12 @@ body {
 }
 button {
   --bg-color: #333;
-  font-size: 24px;
-  padding: 10px 20px;
-  border-radius: 5px;
+  font-size: 1.5em; /* 24px equivalent */
+  padding: 0.625em 1.25em; /* 10px 20px equivalent */
+  border-radius: 0.3125em; /* 5px equivalent */
   background: var(--bg-color);
   text-transform: uppercase;
-  border: 3px solid var(--bg-color);
+  border: 0.1875em solid var(--bg-color); /* 3px equivalent */
   width: 15em;
   color: white;
   cursor: pointer;
@@ -60,15 +63,15 @@ button:has(.red) {
 }
 
 .dot {
-  --diameter: 20px;
+  --diameter: 1.25em; /* 20px equivalent */
   display: inline-block;
   height: var(--diameter);
   width: var(--diameter);
   border-radius: 50%;
   background: #fff;
-  margin: 0 5px;
+  margin: 0 0.3125em; /* 5px equivalent */
   position: relative;
-  top: 2px;
+  top: 0.125em; /* 2px equivalent */
 }
 
 @keyframes blink {
@@ -101,4 +104,45 @@ button:has(.red) {
   max-height: 100%;
   object-fit: contain;
   transition: height 0.5s ease;
+}
+
+#configActions {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  font-size: 1em; /* 16px equivalent */
+}
+
+#configActions label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 0.5em; /* 8px equivalent */
+}
+
+#configActions input[type="checkbox"] {
+  appearance: none;
+  width: 1.25em; /* 20px equivalent */
+  height: 1.25em; /* 20px equivalent */
+  border: 0.125em solid var(--black); /* 2px equivalent */
+  border-radius: 0.25em; /* 4px equivalent */
+  margin-right: 0.5em; /* 8px equivalent */
+  position: relative;
+}
+
+#configActions input[type="checkbox"]:checked {
+  background-color: var(--black);
+  border-color: var(--black);
+}
+
+#configActions input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 0.125em; /* 2px equivalent */
+  left: 0.375em; /* 6px equivalent */
+  width: 0.25em; /* 4px equivalent */
+  height: 0.5em; /* 8px equivalent */
+  border: solid #fff;
+  border-width: 0 0.125em 0.125em 0; /* 2px equivalent */
+  transform: rotate(45deg);
 }
