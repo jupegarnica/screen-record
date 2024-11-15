@@ -50,6 +50,7 @@ button {
   border: 3px solid var(--bg-color);
   width: 15em;
   color: white;
+  cursor: pointer;
 }
 button:has(.red) {
   border-color: var(--red);
