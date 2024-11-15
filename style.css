@@ -107,9 +107,9 @@ button:has(.red) {
 }
 
 #configActions {
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4em;
   font-size: 1em; /* 16px equivalent */
 }
 

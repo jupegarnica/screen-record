@@ -4,6 +4,7 @@ const $videoPreview = document.querySelector('#video');
 const $includeCamera = document.querySelector('#includeCamera');
 const $configActions = document.querySelector('#configActions');
 const $includeMicrophone = document.querySelector('#includeMicrophone');
+const $includeScreen = document.querySelector('#includeScreen');
 $videoPreview.style.display = 'none';
 $videoPreview.autoplay = true;
 $videoPreview.muted = true; // Mute the video player
@@ -57,10 +58,13 @@ changePalette();
 
 $buttonStart.addEventListener('click', async () => {
   console.log('Start button clicked');
-  const screenMedia = await navigator.mediaDevices.getDisplayMedia({
-    video: { frameRate: { ideal: 30 } }
-  });
-  console.log('Screen media obtained');
+  let screenMedia;
+  if ($includeScreen.checked) {
+    screenMedia = await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: { ideal: 30 } }
+    });
+    console.log('Screen media obtained');
+  }
 
   let audioMedia;
 
@@ -86,21 +90,44 @@ $buttonStart.addEventListener('click', async () => {
   }
 
   // Create video elements for the screen and webcam streams
-  const screenVideo = document.createElement('video');
-  screenVideo.srcObject = screenMedia;
-  await screenVideo.play();
+  let screenVideo;
+  if (screenMedia) {
+    screenVideo = document.createElement('video');
+    screenVideo.srcObject = screenMedia;
+    await screenVideo.play();
+  }
 
   // Create a canvas to combine the videos
   const canvas = document.createElement('canvas');
-  canvas.width = 1280; // Set canvas width
-  canvas.height = 720; // Set canvas height
+  if (screenVideo) {
+    canvas.width = screenVideo.videoWidth;
+    canvas.height = screenVideo.videoHeight;
+  } else if (camVideo) {
+    canvas.width = camVideo.videoWidth;
+    canvas.height = camVideo.videoHeight;
+  }
+  console.log('Canvas created', canvas.width, canvas.height);
+
   const ctx = canvas.getContext('2d');
 
   // Function to draw videos onto the canvas
   function drawToCanvas() {
-    ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
+    if (screenVideo) {
+      ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
+    } else if (camVideo) {
+      const videoAspectRatio = camVideo.videoWidth / camVideo.videoHeight;
+      let camWidth = canvas.width;
+      let camHeight = camWidth / videoAspectRatio;
 
-    if (camVideo) {
+      if (camHeight > canvas.height) {
+        camHeight = canvas.height;
+        camWidth = camHeight * videoAspectRatio;
+      }
+
+      ctx.drawImage(camVideo, 0, 0, camWidth, camHeight);
+    }
+
+    if (screenVideo && camVideo) {
       const videoAspectRatio = camVideo.videoWidth / camVideo.videoHeight;
       const maxCamWidth = canvas.width * 0.2; // 20% of canvas width
       const maxCamHeight = canvas.height * 0.2; // 20% of canvas height
@@ -175,7 +202,9 @@ $buttonStart.addEventListener('click', async () => {
 
     // Stop all media tracks
     finalStream.getTracks().forEach(track => track.stop());
-    screenMedia.getTracks().forEach(track => track.stop());
+    if (screenMedia) {
+      screenMedia.getTracks().forEach(track => track.stop());
+    }
     if (camMedia) {
       camMedia.getTracks().forEach(track => track.stop());
     }
@@ -188,11 +217,13 @@ $buttonStart.addEventListener('click', async () => {
     changePalette();
   }
 
-  const [video] = screenMedia.getVideoTracks();
-  video.addEventListener("ended", () => {
-    stopRecording();
-    console.log('Video track ended');
-  });
+  if (screenMedia) {
+    const [video] = screenMedia.getVideoTracks();
+    video.addEventListener("ended", () => {
+      stopRecording();
+      console.log('Video track ended');
+    });
+  }
 
   mediarecorder.addEventListener("dataavailable", (e) => {
     const link = document.createElement("a");
