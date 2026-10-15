@@ -1,18 +1,18 @@
 name: Deploy
+
 on:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy to Cloudflare Workers
     runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Clone repository
@@ -23,14 +23,13 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Build step
-        run: "deno task build"
+      - name: Build
+        run: deno task build
 
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          project: "screen-recorder"
-          entrypoint: "https://deno.land/std@0.217.0/http/file_server.ts"
-          root: "dist"
-          
-          
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Static Assets requiere Wrangler 4 (el default de la action es 3.90)
+          wranglerVersion: "4"
